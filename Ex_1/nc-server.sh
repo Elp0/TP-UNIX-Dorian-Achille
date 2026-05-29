@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Pour se connecter, tapez : "nc [ip du serveur] 12345"
+# Pour se connecter, tapez: "nc [ip du serveur] 12345"
 
 while :
 do
