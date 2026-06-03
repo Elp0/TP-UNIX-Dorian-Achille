@@ -5,27 +5,35 @@
 rm ./fifoNCS
 mkfifo ./fifoNCS
 
-mdp=$(cat config.cfg)
+mdp=$(sed '1q;d' config.cfg)
 
 function interpret(){
-	echo "Entrez le mot de passe: "
-	while read line;
+	ecrire "Entrez le mot de passe: "
+	while lire;
 	do
 		if [ $line == $mdp ]; then
 			break
 		fi
-		echo "Mauvais mot de passe"
+		ecrire "Mauvais mot de passe"
 	done
-	echo "Entrez la clef de chiffrement: "
-	read key
-	date
-	echo "Bienvenue sur le serveur"
-	while read line;
+	ecrire $(date)
+	ecrire "Bienvenue sur le serveur"
+	while lire;
 	do
-		eval echo \$\($line\)
+		eval ecrire \$\($line\)
 	done
+}
+
+function lire() {
+	read line
+	line=$(echo $line | tr $(sed '2q;d' config.cfg) 'A-Za-z')
+}
+
+function ecrire() {
+	echo $@ | tr 'A-Za-z' $(sed '2q;d' config.cfg)
 }
 
 nc -l -p 12345 < ./fifoNCS | interpret > ./fifoNCS
 
 ./nc-server.sh
+
